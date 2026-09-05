@@ -1,0 +1,191 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0d0d0f;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.pagina {
+    width: 100%;
+    max-width: 1100px;
+    height: 640px;
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #9a9a9f;
+}
+
+.painel-formulario {
+    width: 340px;
+    flex-shrink: 0;
+    background-color: #17171a;
+    padding: 28px 24px;
+    overflow-y: auto;
+}
+
+.logo-titulo {
+    font-size: 24px;
+    font-weight: 800;
+    font-style: italic;
+}
+
+.logo-subtitulo {
+    font-size: 13px;
+    font-style: italic;
+    color: #9a9a9f;
+    margin-top: 2px;
+}
+
+.linha-divisoria {
+    border: none;
+    border-top: 2px solid #9a9a9f;
+    opacity: 0.9;
+    margin: 18px 0 20px 0;
+}
+
+.grupo-campo {
+    margin-bottom: 16px;
+}
+
+.rotulo-campo {
+    display: block;
+    font-size: 13px;
+    color: #9a9a9f;
+    margin-bottom: 6px;
+}
+
+.campo-texto,
+.campo-data,
+.campo-select {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid #9a9a9f;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+
+
+
+.campo-texto::placeholder {
+    color: #ffffff;
+}
+
+.campo-select option {
+    background-color: #17171a;
+    color: #ffffff
+}
+
+.grupo-radio {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+}
+
+.opcao-radio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.opcao-radio input[type="radio"] {
+    accent-color: #e6197a;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.opcao-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.opcao-checkbox input[type="checkbox"] {
+    accent-color: #e6197a;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.botao-enviar {
+    width: 100%;
+    background-color: #e6197a;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.botao-enviar:hover {
+    background-color: #ca176b;
+}
+
+.area-jogos {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.04);
+    padding: 28px;
+    overflow-y: auto;
+}
+
+.area-jogos-titulo {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.lista-vazia {
+    color: #9a9a9f;
+    font-size: 14px;
+}
+
+.grade-jogos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+
+.card-jogo {
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid #e6197a;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.card-jogo-nome {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-jogo-info {
+    font-size: 13px;
+    color: #9a9a9f;
+    margin-bottom: 3px;
+}
+
+.estrela-favorito {
+    color: #e6197a;
+}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GameIndex</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body>
+
+    <div class="pagina">
+        <aside class="painel-formulario">
+            <div class="logo-titulo">GameIndex</div>
+            <div class="logo-subtitulo">Cadastro de jogos</div>
+
+            <hr class="linha-divisoria">
+
+            <form id="formulario-jogo">
+                <div class="grupo-campo">
+                    <label class="rotulo-campo">Nome do jogo</label>
+                    <input class="campo-texto" type="text" id="campoNome" placeholder="Ex: Katana Zero" required>
+                </div>
+
+                <div class="grupo-campo">
+                    <label class="rotulo-campo">Data que jogou</label>
+                    <input class="campo-data" type="date" id="campoData" required>
+                </div>
+
+                <div class="grupo-campo">
+                    <label class="rotulo-campo">Plataforma</label>
+                    <select class="campo-select" id="campoPlataforma" required>
+                        <option selected disabled value="#">Selecione uma plataforma</option>
+                        <option value="PC">PC</option>
+                        <option value="Console">Console</option>
+                        <option value="Celular">Celular</option>
+                    </select>
+                </div>
+
+                <div class="grupo-campo">
+                    <span class="rotulo-campo">Categoria</span>
+                    <div class="grupo-radio">
+                        <label class="opcao-radio">
+                            <input type="radio" name="categoria" value="Ação">
+                            Ação
+                        </label>
+                        <label class="opcao-radio">
+                            <input type="radio" name="categoria" value="Aventura">
+                            Aventura
+                        </label>
+                        <label class="opcao-radio">
+                            <input type="radio" name="categoria" value="RPG">
+                            RPG
+                        </label>
+                        <label class="opcao-radio">
+                            <input type="radio" name="categoria" value="Puzzle">
+                            Puzzle
+                        </label>
+                        <label class="opcao-radio">
+                            <input type="radio" name="categoria" value="historiaInt">
+                            História Interativa
+                        </label>
+                        <label class="opcao-radio">
+                            <input type="radio" name="categoria" value="FPS">
+                            FPS
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grupo-campo">
+                    <label class="opcao-checkbox">
+                        <input type="checkbox" id="campoFavorito">
+                        Marcar como favorito
+                    </label>
+                </div>
+
+                <button class="botao-enviar" type="button" onclick="enviar(this)">Salvar jogo</button>
+            </form>
+        </aside>
+
+        <main class="area-jogos">
+            <div class="area-jogos-titulo"><small>Jogos Cadastrados</small></div>
+
+            <p class="lista-vazia" id="mensagem-vazia">Nenhum jogo cadastrado ainda.</p>
+
+
+            <div class="grade-jogos" id="grade-jogos">
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        var formulario = document.getElementById('formulario-jogo');
+        var gradeJogos = document.getElementById('grade-jogos');
+        var msg = document.getElementById('mensagem-vazia');
+
+        var selecionado = false;
+
+        var hoje = new Date().toLocaleDateString("pt-BR");
+        console.log("A data de hoje é: " + hoje)
+
+        function formatarData(dataTexto) {
+            var [ano, mes, dia] = dataTexto.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function validarFormulario() {
+            var nome = campoNome.value.trim();
+            var data = formatarData(campoData.value);
+            var plataforma = campoPlataforma.value;
+            var listaCategorias = document.getElementsByName("categoria");
+            var favorito = campoFavorito.checked;
+
+            if (nome == "") {
+                alert("Preencha o nome do jogo.");
+                return false;
+            }
+
+            if (data == '' || data > hoje) {
+                alert("Preencha o campo com uma data válida.")
+                return false;
+            }
+
+            if (plataforma == '#') {
+                alert("Selecione uma plataforma válida.")
+                return false;
+            }
+
+            for (var i = 0; i < listaCategorias.length; i++) {
+                if (listaCategorias[i].checked) {
+                    selecionado = true;
+                    break;
+                }
+            }
+
+            if (!selecionado) {
+                alert("Selecione uma categoria válida.")
+                return false;
+            }
+
+
+            return true;
+        }
+
+        function enviar(botao) {
+            if (!validarFormulario()) {
+                return;
+
+            } else {
+                var nome = campoNome.value.trim();
+                var data = formatarData(campoData.value);
+                var plataforma = campoPlataforma.value;
+                var listaCategorias = document.getElementsByName("categoria");
+                var favorito = campoFavorito.checked;
+
+                var categoriaNome = '';
+
+                for (var i = 0; i < listaCategorias.length; i++)
+                    if (listaCategorias[i].checked) {
+                        categoriaNome = listaCategorias[i].value;
+                        break;
+                    }
+            }
+
+            estrela = '';
+            if (favorito) {
+                estrela = `<span class="estrela-favorito">★</span>`
+            }
+
+            var card = document.createElement('div');
+            card.className = 'card-jogo';
+            card.innerHTML = `<div class="card-jogo-nome">
+                        ${nome}
+                        ${estrela}
+                        </div>
+
+                        <div class="card-jogo-info">Jogado em: ${data}</div>
+                        <div class="card-jogo-info">Plataforma: ${plataforma}</div>
+                        <div class="card-jogo-info">Categoria: ${categoriaNome}</div>
+      `;
+
+            gradeJogos.appendChild(card);
+
+            msg.style.display = 'none';
+            formulario.reset();
+            console.log("foi")
+        }
+
+    </script>
+
+</body>
+
+</html>
