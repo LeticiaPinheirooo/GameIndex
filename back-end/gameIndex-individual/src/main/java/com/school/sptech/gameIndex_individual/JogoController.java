@@ -38,6 +38,20 @@ public class JogoController {
     return ResponseEntity.status(200).body(jogos);
     }
 
+    @GetMapping("/plataformas")
+    public ResponseEntity<List<Plataforma>> listarPlataformas(){
+        String sql = "SELECT * FROM plataforma";
+
+        List<Plataforma> plataformas = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Plataforma.class));
+
+        if (plataformas.isEmpty()){
+            return  ResponseEntity.status(404).build();
+        }
+        return  ResponseEntity.status(200).body(plataformas);
+    }
+
+
+
     @GetMapping("/procurar")
     public ResponseEntity<List<Jogo>> buscarPorNome(@RequestParam String nome){
         String sql = """
