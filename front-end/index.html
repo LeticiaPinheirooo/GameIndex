@@ -90,6 +90,8 @@
 
     </div>
 
+    
+
     <script>
         var formulario = document.getElementById('formulario-jogo');
         var gradeJogos = document.getElementById('grade-jogos');
@@ -98,8 +100,14 @@
         var selecionado = false;
 
         var hoje = new Date().toLocaleDateString("pt-BR");
-        console.log("A data de hoje é: " + hoje)
+        console.log("[HOJE] " + hoje)
 
+        function formatarHoje(hoje) {
+            var [ano, mes, dia] = hoje.split('/');
+            return `${dia}-${mes}-${ano}`;
+        }
+
+        
         function formatarData(dataTexto) {
             var [ano, mes, dia] = dataTexto.split('-');
             return `${dia}/${mes}/${ano}`;
@@ -107,7 +115,7 @@
 
         function validarFormulario() {
             var nome = campoNome.value.trim();
-            var data = formatarData(campoData.value);
+            var data = campoData.value;
             var plataforma = campoPlataforma.value;
             var listaCategorias = document.getElementsByName("categoria");
             var favorito = campoFavorito.checked;
@@ -117,7 +125,10 @@
                 return false;
             }
 
-            if (data == '' || data > hoje) {
+            if (data == '' || data > formatarHoje(hoje)) {
+                console.log("[DATA INVÁLIDA]:")
+                console.log("[DATA INFORMADA]" + data)
+        
                 alert("Preencha o campo com uma data válida.")
                 return false;
             }
@@ -149,7 +160,7 @@
 
             } else {
                 var nome = campoNome.value.trim();
-                var data = formatarData(campoData.value);
+                var data =campoData.value;
                 var plataforma = campoPlataforma.value;
                 var listaCategorias = document.getElementsByName("categoria");
                 var favorito = campoFavorito.checked;
@@ -175,7 +186,7 @@
                         ${estrela}
                         </div>
 
-                        <div class="card-jogo-info">Jogado em: ${data}</div>
+                        <div class="card-jogo-info">Jogado em: ${formatarData(data)}</div>
                         <div class="card-jogo-info">Plataforma: ${plataforma}</div>
                         <div class="card-jogo-info">Categoria: ${categoriaNome}</div>
       `;
@@ -184,7 +195,7 @@
 
             msg.style.display = 'none';
             formulario.reset();
-            console.log("foi")
+            console.log("[JOGO CADASTRADO COM SUCESSO!]")
         }
 
     </script>
