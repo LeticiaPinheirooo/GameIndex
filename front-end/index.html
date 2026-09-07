@@ -31,9 +31,7 @@
                     <label class="rotulo-campo">Plataforma</label>
                     <select class="campo-select" id="campoPlataforma" required>
                         <option selected disabled value="#">Selecione uma plataforma</option>
-                        <option value="PC">PC</option>
-                        <option value="Console">Console</option>
-                        <option value="Celular">Celular</option>
+                    
                     </select>
                 </div>
 
@@ -57,7 +55,7 @@
                             Puzzle
                         </label>
                         <label class="opcao-radio">
-                            <input type="radio" name="categoria" value="historiaInt">
+                            <input type="radio" name="categoria" value="História Interativa">
                             História Interativa
                         </label>
                         <label class="opcao-radio">
@@ -90,116 +88,182 @@
 
     </div>
 
-    
+</body>
+<script>
+    const URL_BASE = "http://localhost:8080/jogos";
 
-    <script>
-        var formulario = document.getElementById('formulario-jogo');
-        var gradeJogos = document.getElementById('grade-jogos');
-        var msg = document.getElementById('mensagem-vazia');
+    var formulario = document.getElementById('formulario-jogo');
+    var gradeJogos = document.getElementById('grade-jogos');
+    var msg = document.getElementById('mensagem-vazia');
+
+    var hoje = new Date().toLocaleDateString("pt-BR");
+    console.log("[HOJE] " + hoje)
+
+    function formatarHoje(hoje) {
+        var [ano, mes, dia] = hoje.split('/');
+        return `${dia}-${mes}-${ano}`;
+    }
+
+
+    function formatarData(dataTexto) {
+        var [ano, mes, dia] = dataTexto.split('-');
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    function carregarJogosSalvos(){
+        fetch(URL_BASE)
+        .then(resposta => {
+            if(!resposta.ok){
+                throw new Error("Não foi possível buscar jogos.");
+
+            }
+            return resposta.json();
+        })
+        .then(resultado => {
+            for(var i = 0; i < resultado.length; i++){
+                criarCardRegistro(resultado[i]);
+            }
+            console.log("[GET realizado para ListarJogos]")
+            console.log(resultado); 
+        })
+        .catch(erro => console.error(erro));
+    }
+
+    function validarFormulario() {
+        var nome = campoNome.value.trim();
+        var data = campoData.value;
+        var plataforma = campoPlataforma.value;
+        var listaCategorias = document.getElementsByName("categoria");
+        var categoriaNome = '';
+
+        var favorito = campoFavorito.checked;
 
         var selecionado = false;
 
-        var hoje = new Date().toLocaleDateString("pt-BR");
-        console.log("[HOJE] " + hoje)
-
-        function formatarHoje(hoje) {
-            var [ano, mes, dia] = hoje.split('/');
-            return `${dia}-${mes}-${ano}`;
+        if (nome == "") {
+            alert("Preencha o nome do jogo.");
+            return false;
         }
 
-        
-        function formatarData(dataTexto) {
-            var [ano, mes, dia] = dataTexto.split('-');
-            return `${dia}/${mes}/${ano}`;
+        if (data == '' || data > formatarHoje(hoje)) {
+            console.log("[DATA INVÁLIDA]:")
+            console.log("[DATA INFORMADA]" + data)
+
+            alert("Preencha o campo com uma data válida.")
+            return false;
         }
 
-        function validarFormulario() {
-            var nome = campoNome.value.trim();
-            var data = campoData.value;
-            var plataforma = campoPlataforma.value;
-            var listaCategorias = document.getElementsByName("categoria");
-            var favorito = campoFavorito.checked;
-
-            if (nome == "") {
-                alert("Preencha o nome do jogo.");
-                return false;
-            }
-
-            if (data == '' || data > formatarHoje(hoje)) {
-                console.log("[DATA INVÁLIDA]:")
-                console.log("[DATA INFORMADA]" + data)
-        
-                alert("Preencha o campo com uma data válida.")
-                return false;
-            }
-
-            if (plataforma == '#') {
-                alert("Selecione uma plataforma válida.")
-                return false;
-            }
-
-            for (var i = 0; i < listaCategorias.length; i++) {
-                if (listaCategorias[i].checked) {
-                    selecionado = true;
-                    break;
-                }
-            }
-
-            if (!selecionado) {
-                alert("Selecione uma categoria válida.")
-                return false;
-            }
-
-
-            return true;
+        if (plataforma == '#') {
+            alert("Selecione uma plataforma válida.")
+            return false;
         }
 
-        function enviar(botao) {
-            if (!validarFormulario()) {
-                return;
+        for (var i = 0; i < listaCategorias.length; i++) {
+            if (listaCategorias[i].checked) {
+                categoriaNome = listaCategorias[i].value;
+                selecionado = true;
+                break;
+            }
+        }
 
-            } else {
-                var nome = campoNome.value.trim();
-                var data =campoData.value;
-                var plataforma = campoPlataforma.value;
-                var listaCategorias = document.getElementsByName("categoria");
-                var favorito = campoFavorito.checked;
+        if (!selecionado) {
+            alert("Selecione uma categoria válida.")
+            return false;
+        }
 
-                var categoriaNome = '';
+        var dados = {
+            nome,
+            data: data,
+            plataforma,
+            categoriaNome,
+            favorito
+        }
 
-                for (var i = 0; i < listaCategorias.length; i++)
-                    if (listaCategorias[i].checked) {
-                        categoriaNome = listaCategorias[i].value;
-                        break;
-                    }
+        return { sucesso: true, dados: dados };
+
+    }
+
+
+    function carregarPlataformas(){
+        fetch(URL_BASE + "/plataformas")
+        .then(resposta => {
+            if(!resposta.ok){
+                throw new Error("Não foi possível listar as plataformas");
+            }
+            return resposta.json();
+        })
+        .then(resultado => {
+            for(var i = 0; i < resultado.length; i++){
+                var option = document.createElement("option");
+                option.value = resultado[i].nomePlat;
+                option.textContent = resultado[i].nomePlat;
+                campoPlataforma.appendChild(option);
             }
 
-            estrela = '';
-            if (favorito) {
-                estrela = `<span class="estrela-favorito">★</span>`
-            }
+            console.log("[GET realizado para plataformas]");
+            console.log(resultado);
+        })
+    }
 
-            var card = document.createElement('div');
-            card.className = 'card-jogo';
-            card.innerHTML = `<div class="card-jogo-nome">
-                        ${nome}
+    function criarCardRegistro(jogo) {
+        estrela = '';
+        if (jogo.favorito) {
+            estrela = `<span class="estrela-favorito">★</span>`
+        }
+
+        var card = document.createElement('div');
+        card.className = 'card-jogo';
+        card.innerHTML = `<div class="card-jogo-nome">
+                        ${jogo.nome}
                         ${estrela}
                         </div>
 
-                        <div class="card-jogo-info">Jogado em: ${formatarData(data)}</div>
-                        <div class="card-jogo-info">Plataforma: ${plataforma}</div>
-                        <div class="card-jogo-info">Categoria: ${categoriaNome}</div>
-      `;
+                        <div class="card-jogo-info">Jogado em: ${formatarData(jogo.dataJogou)}</div>
+                        <div class="card-jogo-info">Plataforma: ${jogo.plataforma}</div>
+                        <div class="card-jogo-info">Categoria: ${jogo.categoria}</div>
+            `;
 
-            gradeJogos.appendChild(card);
+        gradeJogos.appendChild(card);
 
-            msg.style.display = 'none';
-            formulario.reset();
-            console.log("[JOGO CADASTRADO COM SUCESSO!]")
+        msg.style.display = 'none';
+    }
+
+    function enviar(botao) {
+        var dados = validarFormulario().dados;
+        if (!validarFormulario().sucesso) {
+            return;
+
         }
 
-    </script>
+        var novoJogo = {
+            nome: dados.nome,
+            dataJogou: dados.data,
+            plataforma: dados.plataforma,
+            categoria: dados.categoriaNome,
+            favorito: dados.favorito
+        };
 
-</body>
+        fetch(URL_BASE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(novoJogo)
+        })
+            .then(resposta => {
+                if (resposta.status != 201) throw new Error("Erro ao cadastrar jogo");
+                return resposta.json();
+            })
+            .then(resultado => {
+                console.log("[JOGO CADASTRADO COM SUCESSO!]", resultado);
+                criarCardRegistro(novoJogo);
+            })
+            .catch(erro => console.error(erro));
+
+        formulario.reset();
+    }
+
+    carregarJogosSalvos();
+    carregarPlataformas();
+   
+</script>
 
 </html>

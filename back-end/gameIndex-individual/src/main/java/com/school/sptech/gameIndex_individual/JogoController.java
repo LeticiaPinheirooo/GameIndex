@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@CrossOrigin
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/jogos")
 public class JogoController {
@@ -92,7 +92,7 @@ public class JogoController {
             }, keyHolder);
             Integer idGerado = keyHolder.getKeyAs(Integer.class);
             jogoCriar.setId(idGerado);
-            return ResponseEntity.status(201).build();
+            return ResponseEntity.status(201).body(jogoCriar);
         }
 
         return ResponseEntity.status(400).build();
