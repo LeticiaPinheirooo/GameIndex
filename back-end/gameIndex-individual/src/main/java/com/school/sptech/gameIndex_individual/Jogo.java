@@ -7,6 +7,7 @@ public class Jogo {
     private Integer id;
     private String nome;
     private LocalDate dataJogou;
+    private Integer nota;
     private String categoria;
     private String plataforma;
     private Boolean favorito;
@@ -14,10 +15,11 @@ public class Jogo {
     public Jogo() {
     }
 
-    public Jogo(Integer id, String nome, LocalDate dataJogou, String categoria, String plataforma, Boolean favorito) {
+    public Jogo(Integer id, String nome, LocalDate dataJogou, Integer nota, String categoria, String plataforma, Boolean favorito) {
         this.id = id;
         this.nome = nome;
         this.dataJogou = dataJogou;
+        this.nota = nota;
         this.categoria = categoria;
         this.plataforma = plataforma;
         this.favorito = favorito;
@@ -45,6 +47,14 @@ public class Jogo {
 
     public void setDataJogou(LocalDate dataJogou) {
         this.dataJogou = dataJogou;
+    }
+
+    public Integer getNota() {
+        return nota;
+    }
+
+    public void setNota(Integer nota) {
+        this.nota = nota;
     }
 
     public String getCategoria() {

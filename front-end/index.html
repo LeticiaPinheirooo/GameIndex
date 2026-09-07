@@ -28,10 +28,15 @@
                 </div>
 
                 <div class="grupo-campo">
+                    <label class="rotulo-campo">Nota</label>
+                    <input class="campo-texto" type="number" id="campoNota" placeholder="0-10" required>
+                </div>
+
+                <div class="grupo-campo">
                     <label class="rotulo-campo">Plataforma</label>
                     <select class="campo-select" id="campoPlataforma" required>
                         <option selected disabled value="#">Selecione uma plataforma</option>
-                    
+
                     </select>
                 </div>
 
@@ -110,28 +115,29 @@
         return `${dia}/${mes}/${ano}`;
     }
 
-    function carregarJogosSalvos(){
+    function carregarJogosSalvos() {
         fetch(URL_BASE)
-        .then(resposta => {
-            if(!resposta.ok){
-                throw new Error("Não foi possível buscar jogos.");
+            .then(resposta => {
+                if (!resposta.ok) {
+                    throw new Error("Não foi possível buscar jogos.");
 
-            }
-            return resposta.json();
-        })
-        .then(resultado => {
-            for(var i = 0; i < resultado.length; i++){
-                criarCardRegistro(resultado[i]);
-            }
-            console.log("[GET realizado para ListarJogos]")
-            console.log(resultado); 
-        })
-        .catch(erro => console.error(erro));
+                }
+                return resposta.json();
+            })
+            .then(resultado => {
+                for (var i = 0; i < resultado.length; i++) {
+                    criarCardRegistro(resultado[i]);
+                }
+                console.log("[GET realizado para ListarJogos]")
+                console.log(resultado);
+            })
+            .catch(erro => console.error(erro));
     }
 
     function validarFormulario() {
         var nome = campoNome.value.trim();
         var data = campoData.value;
+        var nota = campoNota.value
         var plataforma = campoPlataforma.value;
         var listaCategorias = document.getElementsByName("categoria");
         var categoriaNome = '';
@@ -150,6 +156,11 @@
             console.log("[DATA INFORMADA]" + data)
 
             alert("Preencha o campo com uma data válida.")
+            return false;
+        }
+
+        if (nota == '' || isNaN(nota) || nota < 0 || nota > 10) {
+            alert("Digite uma nota válida, de 0 a 10.");
             return false;
         }
 
@@ -174,6 +185,7 @@
         var dados = {
             nome,
             data: data,
+            nota: nota,
             plataforma,
             categoriaNome,
             favorito
@@ -184,25 +196,25 @@
     }
 
 
-    function carregarPlataformas(){
+    function carregarPlataformas() {
         fetch(URL_BASE + "/plataformas")
-        .then(resposta => {
-            if(!resposta.ok){
-                throw new Error("Não foi possível listar as plataformas");
-            }
-            return resposta.json();
-        })
-        .then(resultado => {
-            for(var i = 0; i < resultado.length; i++){
-                var option = document.createElement("option");
-                option.value = resultado[i].nomePlat;
-                option.textContent = resultado[i].nomePlat;
-                campoPlataforma.appendChild(option);
-            }
+            .then(resposta => {
+                if (!resposta.ok) {
+                    throw new Error("Não foi possível listar as plataformas");
+                }
+                return resposta.json();
+            })
+            .then(resultado => {
+                for (var i = 0; i < resultado.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = resultado[i].nomePlat;
+                    option.textContent = resultado[i].nomePlat;
+                    campoPlataforma.appendChild(option);
+                }
 
-            console.log("[GET realizado para plataformas]");
-            console.log(resultado);
-        })
+                console.log("[GET realizado para plataformas]");
+                console.log(resultado);
+            })
     }
 
     function criarCardRegistro(jogo) {
@@ -219,6 +231,7 @@
                         </div>
 
                         <div class="card-jogo-info">Jogado em: ${formatarData(jogo.dataJogou)}</div>
+                        <div class="card-jogo-info">Nota: ${jogo.nota}</div>
                         <div class="card-jogo-info">Plataforma: ${jogo.plataforma}</div>
                         <div class="card-jogo-info">Categoria: ${jogo.categoria}</div>
             `;
@@ -238,6 +251,7 @@
         var novoJogo = {
             nome: dados.nome,
             dataJogou: dados.data,
+            nota: Number(dados.nota),
             plataforma: dados.plataforma,
             categoria: dados.categoriaNome,
             favorito: dados.favorito
@@ -263,7 +277,7 @@
 
     carregarJogosSalvos();
     carregarPlataformas();
-   
+
 </script>
 
 </html>

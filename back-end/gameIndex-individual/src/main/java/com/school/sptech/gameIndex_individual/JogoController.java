@@ -26,7 +26,7 @@ public class JogoController {
     @GetMapping()
     public ResponseEntity<List<Jogo>> listarJogos(){
         String sql = """
-        SELECT j.id, j.nome, j.dataJogou, j.favorito,
+        SELECT j.id, j.nome, j.dataJogou, j.nota, j.favorito,
                p.nomePlat AS plataforma,
                c.nomeCat AS categoria
         FROM jogo j
@@ -70,13 +70,14 @@ public class JogoController {
 
     @PostMapping
     public ResponseEntity<Jogo> criarResgistro(@RequestBody Jogo jogoCriar){
-            boolean valido = jogoCriar.getNome() != null &&
+        boolean valido = jogoCriar.getNome() != null &&
                 jogoCriar.getDataJogou() != null &&
+                jogoCriar.getNota() != null &&
                 jogoCriar.getCategoria() != null &&
                 jogoCriar.getPlataforma() != null;
 
         if (valido){
-            String sql = "INSERT INTO jogo (nome, dataJogou, FK_plataforma, FK_categoria, favorito) VALUES (?, ?, (SELECT idPlat FROM plataforma WHERE nomePlat = ?),(SELECT idCat FROM categoria WHERE nomeCat = ?), ?)";
+            String sql = "INSERT INTO jogo (nome, dataJogou, nota, FK_plataforma, FK_categoria, favorito) VALUES (?, ?, ?, (SELECT idPlat FROM plataforma WHERE nomePlat = ?),(SELECT idCat FROM categoria WHERE nomeCat = ?), ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(con -> {
@@ -84,9 +85,10 @@ public class JogoController {
 
                 ps.setString(1, jogoCriar.getNome());
                 ps.setDate(2, java.sql.Date.valueOf(jogoCriar.getDataJogou()));
-                ps.setString(3, jogoCriar.getPlataforma());
-                ps.setString(4, jogoCriar.getCategoria());
-                ps.setBoolean(5, jogoCriar.getFavorito());
+                ps.setInt(3, jogoCriar.getNota());
+                ps.setString(4, jogoCriar.getPlataforma());
+                ps.setString(5, jogoCriar.getCategoria());
+                ps.setBoolean(6, jogoCriar.getFavorito());
 
                 return ps;
             }, keyHolder);

@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS jogo(
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     dataJogou DATE NOT NULL,
+    nota INT NOT NULL,
     favorito BOOLEAN NOT NULL DEFAULT FALSE,
 
     FK_plataforma INT,
@@ -38,5 +39,5 @@ INSERT INTO categoria VALUES
 (6, 'FPS');
 
 
-INSERT INTO jogo (nome, dataJogou, FK_plataforma, FK_categoria, favorito) VALUES
-('Katana zero', '2026-09-05', 1, 1, 'true');
+INSERT INTO jogo (nome, dataJogou, nota, FK_plataforma, FK_categoria, favorito) VALUES
+('Katana zero', '2026-09-05', 10,1, 1, 'true');
