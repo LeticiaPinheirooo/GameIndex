@@ -68,16 +68,38 @@ public class JogoController {
         return  ResponseEntity.status(200).body(jogos);
     }
 
+    private Boolean validacaoNovoRegistro(Jogo jogo){
+        if (jogo.getNome() == null || jogo.getNome().trim().isEmpty()) {
+            return false;
+        }
+
+        if (jogo.getDataJogou() == null || jogo.getDataJogou().isAfter(java.time.LocalDate.now())) {
+            return false;
+        }
+
+        if (jogo.getNota() == null || jogo.getNota() < 0 || jogo.getNota() > 10) {
+            return false;
+        }
+
+        if (jogo.getPlataforma() == null || jogo.getCategoria() == null) {
+            return false;
+        }
+        
+        Integer verificaPlataforma = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM plataforma WHERE UPPER(nomePlat) = UPPER(?)", Integer.class, jogo.getPlataforma());
+
+        Integer verificaCategoria = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM categoria WHERE LOWER(nomeCat) = LOWER(?)", Integer.class, jogo.getCategoria());
+
+        if (verificaPlataforma == 0 || verificaCategoria == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     @PostMapping
     public ResponseEntity<Jogo> criarResgistro(@RequestBody Jogo jogoCriar){
-        boolean valido = jogoCriar.getNome() != null &&
-                jogoCriar.getDataJogou() != null &&
-                jogoCriar.getNota() != null &&
-                jogoCriar.getCategoria() != null &&
-                jogoCriar.getPlataforma() != null;
-
-        if (valido){
-            String sql = "INSERT INTO jogo (nome, dataJogou, nota, FK_plataforma, FK_categoria, favorito) VALUES (?, ?, ?, (SELECT idPlat FROM plataforma WHERE nomePlat = ?),(SELECT idCat FROM categoria WHERE nomeCat = ?), ?)";
+        if (validacaoNovoRegistro(jogoCriar)){
+            String sql = "INSERT INTO jogo (nome, dataJogou, nota, FK_plataforma, FK_categoria, favorito) VALUES (?, ?, ?, (SELECT idPlat FROM plataforma WHERE nomePlat = UPPER(?)),(SELECT idCat FROM categoria WHERE LOWER(nomeCat) = LOWER(?)), ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(con -> {
@@ -88,7 +110,7 @@ public class JogoController {
                 ps.setInt(3, jogoCriar.getNota());
                 ps.setString(4, jogoCriar.getPlataforma());
                 ps.setString(5, jogoCriar.getCategoria());
-                ps.setBoolean(6, jogoCriar.getFavorito());
+                ps.setBoolean(6, jogoCriar.getFavorito() != null && jogoCriar.getFavorito());
 
                 return ps;
             }, keyHolder);
