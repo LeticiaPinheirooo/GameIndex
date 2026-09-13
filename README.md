@@ -30,7 +30,7 @@ gameindex/
 
 - **Back-end:** abra a pasta `backend/` na IDE e rode a classe principal. A API sobe em `http://localhost:8080`.
 
-- **Front-end:** veja [`frontend/README.md`](./frontend/README.md) - precisa do Live Server, não dá pra abrir com duplo clique.
+- **Front-end:** veja [`front-end/README.md`](./front-end/README.md) - precisa do Live Server, não dá pra abrir com duplo clique.
 
 <small>O front roda em `http://127.0.0.1:5500` e chama a API em `http://localhost:8080/jogos` via `fetch()`. O CORS já está liberado pra essa origem no `@CrossOrigin` do back-end.</small>
 
